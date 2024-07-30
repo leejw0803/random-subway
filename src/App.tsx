@@ -1,42 +1,26 @@
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
-import { useEffect, useState } from 'react';
+import { StationQueries } from './entities/station';
+import SlotCounter from 'react-slot-counter';
+
+const lineIds: NumberString[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function App() {
-  const [data, setData] = useState();
+  const stations = StationQueries.useStations(lineIds);
 
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetch(
-        `http://openapi.seoul.go.kr:8088/${
-          import.meta.env.VITE_DATA_API_KEY
-        }/xml/SearchInfoBySubwayNameService/1/5`
-      );
+  if (!stations) return <>로딩중...</>;
 
-      return data;
-    };
-    getData();
-  }, []);
+  const randomIndex = Math.floor(Math.random() * stations.length);
+
+  if (!stations[randomIndex]) return;
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <SlotCounter
+      value={stations[randomIndex].stinNm}
+      dummyCharacters={['가', '나', '다']}
+      startValue={'가나다라마바사아자차카타파하'}
+      dummyCharacterCount={stations[randomIndex].stinNm.length}
+      duration={2}
+    />
   );
 }
 
